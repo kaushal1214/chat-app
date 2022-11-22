@@ -7,6 +7,8 @@ const app = express()
 const server = http.createServer(app)
 const io  = socketio(server)
 
+const MSG = process.env.MESSAGE || "Welcome!"
+
 const {generateMessage} = require("./utils/message")
 const {addUser,getAllUser,getUser,removeUser} = require('../src/utils/users')
 
@@ -20,7 +22,8 @@ io.on('connection',(socket)=>{
             return callback(error)
         }
         socket.join(user.room)
-        socket.emit('message',generateMessage('Admin','Welcome!'))
+        console.log(MSG)
+        socket.emit('message',generateMessage('Admin',MSG))
         socket.broadcast.to(user.room).emit('message',generateMessage('Admin',`${user.username} has joined!`))
         
         io.to(user.room).emit('roomData',{
